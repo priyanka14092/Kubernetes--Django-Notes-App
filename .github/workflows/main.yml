@@ -1,0 +1,34 @@
+name: Docker--Image-Notes-App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./django/notes
+
+    steps:
+    - name: Checkout Repository under GitHub Workspace
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Registry
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Build the Docker Image from Dockerfile
+      run: docker build -t priyankaceq/notes-making-app:update .
+
+    - name: Show Images in my Docker Registry
+      run: docker images 
+
+    - name: Push Image to the Docker Registry
+      run: docker push priyankaceq/notes-making-app:update
+
+    - name: Logout from Docker Registry
+      run: docker logout
